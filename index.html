@@ -1,5 +1,3 @@
-//’수정’ 이라고 검색하시면 수정하기 좋은 쪽으로 이동됩니다.
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -127,11 +125,11 @@
     
 //그룹과 인원추가를 만지고 싶다면 여기를 수정하세요
 const MOCK_GROUPS = [
-    { id: 'group1', name: '에이 팀', icon: 'A' },
-    { id: 'group2', name: '비 팀', icon: 'B' },
-    { id: 'group3', name: '씨 팀', icon: 'C' },
-    { id: 'group4', name: '디 팀', icon: 'D' },
-    { id: 'group5', name: '이 팀', icon: 'E' },
+    { id: 'group1', name: 'MOVIE', icon: '🎬' },
+    { id: 'group2', name: 'BOOK', icon: '📖' },
+    { id: 'group3', name: 'MUSIC', icon: '🎧' },
+    { id: 'group4', name: 'PAINTING', icon: '🖼️' },
+    { id: 'group5', name: 'LOCATION', icon: '🗺️' },
 ];
 
 const MOCK_USERS = [
@@ -944,19 +942,21 @@ const MOCK_USERS = [
                     className={`transition ${animationClass} ${isMainFocus || isPreview ? '' : 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800'}`}
                     onClick={handlePostClick}
                 >
-                    <div className="flex items-start p-4">
-                        <div className="mr-3 flex-shrink-0 flex flex-col items-center relative">
-                            {finalDrawTopLine && (
-                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 w-px h-4 bg-gray-300 dark:bg-gray-700"></div>
+                    <div className="flex items-start p-4 relative">
+                        {/* [구조] 스레드 연결 선 */}
+                            {finalDrawBottomLine && (
+                                <div className="absolute left-[36px] top-[36px] -translate-x-1/2 w-px h-[calc(100%-36px)] bg-gray-300 dark:bg-gray-700"></div>
                             )}
+                            {finalDrawTopLine && (
+                                <div className="absolute left-[36px] top-0 -translate-x-1/2 w-px h-4 bg-gray-300 dark:bg-gray-700"></div>
+                            )}
+                        <div className="mr-3 flex-shrink-0 flex flex-col items-center relative">
                             <ProfilePictureDisplay
                                 profile={postProfile}
-                                sizeClass={isMainFocus ? 'w-12 h-12' : 'w-10 h-10'}
-                                textSizeClass={isMainFocus ? 'text-xl' : 'text-lg'}
+                                sizeClass={'w-10 h-10'}
+                                textSizeClass={'text-lg'}
                             />
-                            {finalDrawBottomLine && (
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 w-px h-full bg-gray-300 dark:bg-gray-700"></div>
-                            )}
+
                         </div>
                         
 
@@ -1167,11 +1167,12 @@ const MOCK_USERS = [
             setImageUrl('');
             setShowImageInput(false);
         };
-
+        
+        {/* [구조] 입력창 메인포스트 or 답글 */}
         if (!currentUserId && !isMainPost) return null; 
 
         return (
-          <form onSubmit={handleReplySubmit} className={`flex flex-col ${isMainPost ? 'px-4 pb-4' : 'px-4 py-3'}`}>
+          <form onSubmit={handleReplySubmit} className={`flex flex-col ${isMainPost ? 'px-4 py-3' : 'px-4 py-3'}`}>
             <div className="flex">
                 <div className="mr-3 flex-shrink-0">
                     <ProfilePictureDisplay profile={formProfile} sizeClass="w-10 h-10 mt-2" textSizeClass="text-lg" />
@@ -1348,7 +1349,7 @@ const App = () => {
         const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
         const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false); // [2. 프로필 비밀번호]
         const [userToAuthenticate, setUserToAuthenticate] = useState(null); // [2. 프로필 비밀번호]
-        const [isProfileSelectorOpen, setIsProfileSelectorOpen] = useState(true); 
+        const [isProfileSelectorOpen, setIsProfileSelectorOpen] = useState(false); 
         const [activeView, setActiveView] = useState('timeline'); 
         const [postToRetweet, setPostToRetweet] = useState(null); 
         const [replyToPost, setReplyToPost] = useState(null); 
@@ -1967,11 +1968,11 @@ const App = () => {
             onRetweetAction: handleRetweetAction, 
             onReplyClick: handleReplyClick
         };
-
         return (
-            <div className="min-h-screen bg-gray-100 dark:bg-gray-900 font-sans antialiased pt-[70px]"> 
+            <div className="min-h-screen bg-gray-100 dark:bg-gray-900 font-sans antialiased pt-[80px]"> 
                 
                 <div className="fixed top-0 left-0 right-0 z-20 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+                    {/* [구조] 상단 토글 버튼 */}
                     <div className="w-full max-w-xl md:w-[576px] mx-auto p-3 flex justify-between items-center"> 
                         <button
                             onClick={toggleProfileSelector}
@@ -1984,12 +1985,12 @@ const App = () => {
                                 textSizeClass="text-lg" 
                             />
                             <div className="flex flex-col items-start truncate max-w-[120px] sm:max-w-full">
-                                <p className="font-bold text-base leading-tight truncate">{currentProfileDisplay.name}</p>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 leading-tight truncate">@{currentProfileDisplay.handle}</p>
+                                <p className="font-bold text-sm leading-tight truncate">{currentProfileDisplay.name}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 leading-tight truncate">@{currentProfileDisplay.handle}</p>
                             </div>
                             <div className={`w-5 h-5 transition-transform duration-300 flex items-center justify-center`}>
                                 {typeof ToggleIcon === 'string' 
-                                    ? <span className="text-xl">{ToggleIcon}</span> 
+                                    ? <span className="text-sm">{ToggleIcon}</span> 
                                     : <ToggleIcon size={20} className={isProfileSelectorOpen ? 'rotate-180' : 'rotate-0'} />
                                 }
                             </div>
@@ -2019,7 +2020,7 @@ const App = () => {
                             </button>
                         </div>
                     </div>
-
+                    {/* [구조] 상단 토글 내용 */}
                     <div 
                         className={`transition-all duration-300 ease-in-out overflow-hidden w-full max-w-xl md:w-[576px] mx-auto ${isProfileSelectorOpen ? 'max-h-[500px] opacity-100 p-4 pt-0' : 'max-h-0 opacity-0 p-0'}`}
                     >
@@ -2091,9 +2092,7 @@ const App = () => {
                         </div>
 
                         <div className="p-2 bg-gray-50 dark:bg-gray-900 rounded-lg max-h-60 overflow-y-auto">
-                            <span className="font-semibold text-gray-500 dark:text-gray-400 self-center mb-2 block border-b pb-1 dark:border-gray-700">
-                                {customGroups[activeGroup] || MOCK_GROUPS.find(g => g.id === activeGroup)?.name} 프로필 선택:
-                            </span>
+
                             <div className="flex flex-wrap justify-center gap-3">
                                 {filteredUsers.map(user => {
                                     const custom = allCustomProfiles[user.uid] || {};
@@ -2111,7 +2110,7 @@ const App = () => {
                                             onClick={() => handleProfileSwitch(user)}
                                             className={`flex items-center p-3 rounded-xl text-white transition w-full max-w-[48%] sm:max-w-[30%]
                                             ${user.color} 
-                                            ${currentUserId === user.uid ? 'ring-4 ring-offset-2 ring-red-400 scale-[1.01] opacity-100 shadow-lg' : 'opacity-80 hover:opacity-100'}
+                                            ${currentUserId === user.uid ? 'ring-2 ring-offset-2 ring-blue-400 scale-[1.01] opacity-100 shadow-lg' : 'opacity-80 hover:opacity-100'}
                                             `}
                                         >
                                             <div className="mr-2">
@@ -2138,9 +2137,11 @@ const App = () => {
                     </div>
                 </div>
 
+                {/* [구조] 본문 영역 */}
                 <div className="w-full max-w-xl md:w-[576px] mx-auto border-x border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 shadow-lg min-h-screen min-w-[300px]">
-                    
-                    <div className="sticky top-[57px] z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+
+                    {/* [구조] 본문 상단 탭 */}
+                    <div className="sticky top-[69px] z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                         <div className="flex justify-around text-center">
                             {VIEW_OPTIONS.map((view) => (
                                 <button
@@ -2175,8 +2176,9 @@ const App = () => {
                         </div>
                     </div>
 
+                    {/* [구조] 본문 입력창 - 입력창 세부 디자인은 따로 */}
                     {(activeView === 'timeline' && !selectedPostIdForThread) && (
-                        <div className="border-b border-gray-200 dark:border-gray-700">
+                        <div className="border-b border-gray-200 dark:border-gray-700 ">
                             <ReplyForm 
                                 parentId={null} 
                                 onReply={handlePost} 
